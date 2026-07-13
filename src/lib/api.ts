@@ -55,7 +55,9 @@ export async function research(query: string): Promise<ResearchResult> {
  */
 export async function checkHealth(): Promise<boolean> {
   try {
-    const response = await api.get('/api/health');
+    // 直连模式：后端健康检查在 /health；代理模式：通过 /api/health 转发
+    const healthUrl = API_BASE_URL ? `${API_BASE_URL}/health` : '/api/health';
+    const response = await axios.get(healthUrl, { timeout: 5000 });
     return response.data?.status === 'ok';
   } catch {
     return false;
