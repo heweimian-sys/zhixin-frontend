@@ -1,18 +1,19 @@
 /**
  * Cloudflare Pages Function — 代理 /api/research 到 Railway 后端
- * 国内用户通过 *.pages.dev 访问，Cloudflare 边缘网络转发到 Railway
  */
 
 const BACKEND_URL = 'https://web-production-10b15.up.railway.app';
 
 export async function onRequestPost(context) {
   try {
-    const body = await context.request.json();
+    const body = await context.request.text();
 
     const resp = await fetch(`${BACKEND_URL}/api/research`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: body,
     });
 
     const text = await resp.text();
